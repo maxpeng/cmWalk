@@ -1,11 +1,12 @@
 cmake_minimum_required(VERSION 3.9)
 
-# or use cmake -DCMAKE_TOOLCHAIN_FILE=path/to/file
+# set the toolchain file.
 # toolchain file should be set before "project" command.
+# the toolchain file can also be set via "cmake -DCMAKE_TOOLCHAIN_FILE=path/to/file".
 set(CMAKE_TOOLCHAIN_FILE gcc_arm_none_eabi_toolchain.cmake)
 
 project({{ project_name }})
-enable_language(C ASM)
+enable_language(C CXX ASM)
 
 include(options.txt)
 
