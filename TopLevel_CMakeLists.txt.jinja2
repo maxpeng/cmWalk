@@ -1,0 +1,37 @@
+cmake_minimum_required(VERSION 3.9)
+
+# or use cmake -DCMAKE_TOOLCHAIN_FILE=path/to/file
+# toolchain file should be set before "project" command.
+set(CMAKE_TOOLCHAIN_FILE gcc_arm_none_eabi_toolchain.cmake)
+
+project({{ project_name }})
+enable_language(C ASM)
+
+include(options.txt)
+
+
+add_executable(${PROJECT_NAME}.elf
+{%  if files|length > 0 %}
+{% for fname in files %}
+    {{ fname }}
+{% endfor %}
+{% else %}
+    ""
+{% endif %}
+)
+
+set(CURRENT_EXE_NAME {{ project_name }}.elf)
+{% for subdir in subdirs %}
+include({{ subdir }}/CMakeLists.txt)
+{% endfor %}
+
+
+set(HEX_FILE ${PROJECT_NAME}.hex)
+add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
+    COMMENT "Building ${HEX_FILE}...")
+
+set(BIN_FILE ${PROJECT_NAME}.bin)
+add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+    COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
+    COMMENT "Building ${BIN_FILE}...")
