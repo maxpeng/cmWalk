@@ -12,7 +12,9 @@ enable_language(C CXX ASM)
 include(options.txt)
 
 
-add_executable(${PROJECT_NAME}.elf
+# specify the executable target, the CMake code included from subdirectories will
+# update the dependent sources.
+add_executable({{ project_name }}.elf
 {%  if files|length > 0 %}
 {% for fname in files %}
     {{ fname }}
@@ -22,11 +24,14 @@ add_executable(${PROJECT_NAME}.elf
 {% endif %}
 )
 
-# specify the target file via a variable for CMakeLists.txt files in subdirectories.
+{% if subdirs|length > 0 %}
+# specify the executable target through a variable for CMakeLists.txt files in subdirectories.
 set(CURRENT_EXE_NAME ${PROJECT_NAME}.elf)
+# load and run the CMake code from subdirectories for current target.
 {% for subdir in subdirs %}
 include({{ subdir }}/CMakeLists.txt)
 {% endfor %}
+{% endif %}
 
 
 # generate the hex file from the built target.
