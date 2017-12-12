@@ -8,6 +8,7 @@ set(CMAKE_TOOLCHAIN_FILE gcc_arm_none_eabi_toolchain.cmake)
 project({{ project_name }})
 enable_language(C CXX ASM)
 
+# load and run the CMake code from the given file to specify project specific options.
 include(options.txt)
 
 
@@ -21,17 +22,20 @@ add_executable(${PROJECT_NAME}.elf
 {% endif %}
 )
 
-set(CURRENT_EXE_NAME {{ project_name }}.elf)
+# specify the target file via a variable for CMakeLists.txt files in subdirectories.
+set(CURRENT_EXE_NAME ${PROJECT_NAME}.elf)
 {% for subdir in subdirs %}
 include({{ subdir }}/CMakeLists.txt)
 {% endfor %}
 
 
+# generate the hex file from the built target.
 set(HEX_FILE ${PROJECT_NAME}.hex)
 add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} -Oihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
     COMMENT "Building ${HEX_FILE}...")
 
+# generate the bin file from the built target.
 set(BIN_FILE ${PROJECT_NAME}.bin)
 add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} -Obinary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
