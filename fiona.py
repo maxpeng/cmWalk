@@ -79,5 +79,6 @@ def mainFunction():
         dir_depth += 1
     print("\nFinished the generation of CMakeLists.txt files!")
 
+
 if __name__ == '__main__':
     sys.exit(mainFunction())
