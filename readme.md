@@ -1,4 +1,4 @@
-# fiona
+# cmWalk
 
 A python script to generate CMakeLists.txt files for building C/C++ project of embedded system.
 
