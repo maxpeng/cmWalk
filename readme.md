@@ -1,6 +1,6 @@
 # cmWalk
 
-A python script to generate CMakeLists.txt files for building C/C++ project of embedded system.
+A python script to walk subdirectories of a C/C++ project of embedded system to generate CMakeLists.txt files for building the executable.
 
 
 ### References:
