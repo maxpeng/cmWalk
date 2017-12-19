@@ -1,11 +1,14 @@
+#!/usr/bin/env python
+
 import sys
 import os
 import argparse
 from jinja2 import Environment, FileSystemLoader
+import json
 import walkdir # https://walkdir.readthedocs.io/en/stable/#
 
 
-__VERSION__ = '0.0.1'
+__VERSION__ = '0.0.2'
 
 
 def parseArgs():
@@ -60,16 +63,57 @@ def genSubDirCMakeListsFile(working_path, subdirs, files):
     return fnameOut
 
 
+def readCfgJson(working_path):
+    """Read cmWalk configuration data of a working directory from a json file.
+
+    :param working_path: working path for reading the configuration data.
+    :return: the configuration data represented in a json object, None if the configuration files does not
+             exist.
+    """
+
+    CFG_JSON_FILENAME = 'cmwalk.json'
+    cfg_json_filename = os.path.join(working_path, CFG_JSON_FILENAME)
+    if os.path.isfile(cfg_json_filename):
+        with open(cfg_json_filename) as json_file:
+            cfg = json.load(json_file)
+            return cfg
+    return None
+
+
+
 def mainFunction():
     args = parseArgs()
 
     it = walkdir.filtered_walk(args.input_dir,
-                              excluded_dirs=['.*', 'build', 'cmake-build-debug'],
                               included_files=['*.s', '*.cpp', '*.c', '*.cxx', '*.h', '*.hpp'])
 
     dir_depth = 0
     for working_path, subdirs, files in it:
         print("Generating CMakeLists.txt in %s..." % working_path)
+
+        # read configuration data of the working path form the json file, 'cfg' will be None if it does not exist.
+        cfg = readCfgJson(working_path)
+        if cfg:
+            if 'src_dirs' in cfg.keys():
+                included_src_dirs = []
+                for subdir in subdirs:
+                    if subdir in cfg['src_dirs']:
+                        included_src_dirs.append(subdir)
+                subdirs.clear()
+                subdirs.extend(included_src_dirs)
+            elif 'ignored_dirs' in cfg.keys():
+                for ignored_dir in cfg['ignored_dirs']:
+                    try:
+                        subdirs.remove(ignored_dir)
+                    except:
+                        pass
+            elif 'ignored_files' in cfg.keys():
+                for ignored_file in cfg['ignored_files']:
+                    try:
+                        files.remove(ignored_file)
+                    except:
+                        pass
+
         if dir_depth == 0:
             # generate top level CMakeLists.txt.
             genTopLevelDirCMakeListsFile(working_path, subdirs, files)
