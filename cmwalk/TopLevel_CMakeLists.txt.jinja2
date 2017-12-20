@@ -12,7 +12,7 @@ enable_language(C CXX ASM)
 include(options.txt)
 
 
-# specify the executable target, the CMake code included from subdirectories will
+# export the executable target through a variable to CMakeLists.txt files in subdirectories.
 # update the dependent sources.
 add_executable({{ project_name }}.elf
 {%  if files|length > 0 %}
