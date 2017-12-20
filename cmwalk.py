@@ -94,23 +94,23 @@ def mainFunction():
         # read configuration data of the working path form the json file, 'cfg' will be None if it does not exist.
         cfg = readCfgJson(working_path)
         if cfg:
-            if 'src_dirs' in cfg.keys():
-                included_src_dirs = []
+            if 'sourceDirs' in cfg.keys():
+                includedSourceDirs = []
                 for subdir in subdirs:
-                    if subdir in cfg['src_dirs']:
-                        included_src_dirs.append(subdir)
+                    if subdir in cfg['sourceDirs']:
+                        includedSourceDirs.append(subdir)
                 subdirs.clear()
-                subdirs.extend(included_src_dirs)
-            elif 'ignored_dirs' in cfg.keys():
-                for ignored_dir in cfg['ignored_dirs']:
+                subdirs.extend(includedSourceDirs)
+            elif 'ignoredDirs' in cfg.keys():
+                for ignoredDir in cfg['ignoredDirs']:
                     try:
-                        subdirs.remove(ignored_dir)
+                        subdirs.remove(ignoredDir)
                     except:
                         pass
-            elif 'ignored_files' in cfg.keys():
-                for ignored_file in cfg['ignored_files']:
+            elif 'ignoredFiles' in cfg.keys():
+                for ignoredFile in cfg['ignoredFiles']:
                     try:
-                        files.remove(ignored_file)
+                        files.remove(ignoredFile)
                     except:
                         pass
 
