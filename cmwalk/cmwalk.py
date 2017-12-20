@@ -6,17 +6,20 @@ import argparse
 from jinja2 import Environment, FileSystemLoader
 import json
 import walkdir # https://walkdir.readthedocs.io/en/stable/#
-
-
-__VERSION__ = '0.0.2'
+from cmwalk import version
 
 
 def parseArgs():
-    description = "A python script to generate CMakeLists.txt of a C/C++ project - {}.".format(__VERSION__)
-    parser = argparse.ArgumentParser(description = description)
-    parser.add_argument('input_dir', help = 'The base directory of C/C++ project.')
+    description = "A python script to generate CMakeLists.txt of a C/C++ project - v{}.".format(version.VERSION)
+    parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('input_dir', help='The base directory of C/C++ project.')
     args = parser.parse_args()
     return args
+
+
+
+def getPackagePath():
+    return os.path.dirname(__file__)
 
 
 def genTopLevelDirCMakeListsFile(working_path, subdirs, files):
@@ -29,7 +32,7 @@ def genTopLevelDirCMakeListsFile(working_path, subdirs, files):
     :return: the full path name of generated CMakeLists.txt.
     """
 
-    env = Environment(loader=FileSystemLoader('.'), trim_blocks=True, lstrip_blocks=True)
+    env = Environment(loader=FileSystemLoader(getPackagePath()), trim_blocks=True, lstrip_blocks=True)
 
     fnameTemplate = 'TopLevel_CMakeLists.txt.jinja2'
     fnameOut = os.path.join(working_path, 'CMakeLists.txt')
@@ -51,7 +54,7 @@ def genSubDirCMakeListsFile(working_path, subdirs, files):
     :return: the full path name of generated CMakeLists.txt.
     """
 
-    env = Environment(loader=FileSystemLoader('.'), trim_blocks=True, lstrip_blocks=True)
+    env = Environment(loader=FileSystemLoader(getPackagePath()), trim_blocks=True, lstrip_blocks=True)
 
     fnameTemplate = 'SubDir_CMakeLists.txt.jinja2'
     fnameOut = os.path.join(working_path, 'CMakeLists.txt')
