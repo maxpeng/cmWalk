@@ -1,10 +1,11 @@
 # cmWalk
 
-## Table of Conents:
+## Table of Conents
+
 <!-- TOC -->
 
 - [cmWalk](#cmwalk)
-    - [Table of Conents:](#table-of-conents)
+    - [Table of Conents](#table-of-conents)
     - [1. Introduction](#1-introduction)
     - [2. Usage](#2-usage)
     - [3. Configuration File](#3-configuration-file)

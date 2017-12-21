@@ -38,14 +38,17 @@ include({{ subdir }}/CMakeLists.txt)
 {% endif %}
 
 
-# generate the hex file from the built target.
-set(HEX_FILE ${PROJECT_NAME}.hex)
-add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
-    COMMENT "Building ${HEX_FILE}...")
+# if compiler is GNU gcc/g++, then generate *.bin & *.hex files.
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+    # generate the hex file from the built target.
+    set(HEX_FILE ${PROJECT_NAME}.hex)
+    add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
+        COMMENT "Building ${HEX_FILE}...")
 
-# generate the bin file from the built target.
-set(BIN_FILE ${PROJECT_NAME}.bin)
-add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
-    COMMENT "Building ${BIN_FILE}...")
+    # generate the bin file from the built target.
+    set(BIN_FILE ${PROJECT_NAME}.bin)
+    add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
+        COMMENT "Building ${BIN_FILE}...")
+endif()
