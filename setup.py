@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 from cmwalk import version
 
 setup(name='cmwalk',
@@ -8,7 +8,7 @@ setup(name='cmwalk',
       author='Max Peng',
       author_email='max.peng1768@gmail.com',
       license='MIT',
-      packages=['cmwalk'],
+      packages=find_packages(),
       install_requires=['jinja2', 'walkdir'],
       package_data={
           # If any package contains *.txt or *.rst files, include them:

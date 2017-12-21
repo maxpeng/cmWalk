@@ -51,7 +51,7 @@ class CmWalk(object):
         return None
 
 
-    def genTopLevelDirCMakeListsFile(self, working_path, subdirs, files):
+    def genTopLevelDirCMakeListsFile(self, working_path, subdirs, files, cfg):
         """
         Generate top level CMakeLists.txt.
 
@@ -63,7 +63,10 @@ class CmWalk(object):
 
         fnameOut = os.path.join(working_path, 'CMakeLists.txt')
         template = self.envJinja.get_template(self.TOP_LEVEL_CMAKELISTS_JINJA2_TEMPLATE)
-        fcontent = template.render({'project_name':os.path.basename(os.path.abspath(working_path)), 'subdirs': subdirs, 'files': files})
+        fcontent = template.render({'project_name':os.path.basename(os.path.abspath(working_path)),
+                                    'subdirs': subdirs,
+                                    'files': files,
+                                    'cfg': cfg})
         with open(fnameOut, 'w') as f:
             f.write(fcontent)
         return fnameOut
@@ -102,15 +105,15 @@ def mainFunction():
         # read configuration data of the working path form the json file, 'cfg' will be None if it does not exist.
         cfg = cmwalk.readCfgJson(working_path)
         if cfg:
-            if 'sourceDirs' in cfg.keys():
+            if 'sourceDirectories' in cfg.keys():
                 includedSourceDirs = []
                 for subdir in subdirs:
-                    if subdir in cfg['sourceDirs']:
+                    if subdir in cfg['sourceDirectories']:
                         includedSourceDirs.append(subdir)
                 subdirs.clear()
                 subdirs.extend(includedSourceDirs)
-            elif 'ignoredDirs' in cfg.keys():
-                for ignoredDir in cfg['ignoredDirs']:
+            elif 'ignoredDirectories' in cfg.keys():
+                for ignoredDir in cfg['ignoredDirectories']:
                     try:
                         subdirs.remove(ignoredDir)
                     except:
@@ -124,7 +127,7 @@ def mainFunction():
 
         if dir_depth == 0:
             # generate top level CMakeLists.txt.
-            cmwalk.genTopLevelDirCMakeListsFile(working_path, subdirs, files)
+            cmwalk.genTopLevelDirCMakeListsFile(working_path, subdirs, files, cfg)
         else:
             # generate CMakeLists.txt in subdirectories.
             cmwalk.genSubDirCMakeListsFile(working_path, subdirs, files)
