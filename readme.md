@@ -143,9 +143,10 @@ You can create a json file for each directory of project directory tree to confi
 
    A list of source directories.
 
-   If `sourceDirs` is specified in `cmwalk.json`, then only the specified directories will be included for parsing.
+   If `sourceDirectories` is specified in `cmwalk.json`, then only the specified directories will be included for parsing, other directories will be excluded.
+   If `sourceDirectories` does not exist but `ignoredDirectories` exist, then all the directories except those specified by `ignoredDirectories` will be excluded.
 
-   To specify the source subdirectories for `cmake` build system:
+   An example of specifying the source subdirectories for searching the source files:
 
    ```json
    {
@@ -154,10 +155,11 @@ You can create a json file for each directory of project directory tree to confi
    ```
 
 - **ignoredDirectories** - A list of ignored directories.
+
    `sourceDirs` property has higher priority than `ignoredDirs` property. If both of `sourceDirs`
    and `ignoredDirs` properties are specified in `cmwalk.json`, `ignoredDirs` property has no effect.
 
-   To exclude subdirectories for `cmake` build system:
+   An example of excluding subdirectories for searching the source files:
 
    ```json
    {
@@ -167,7 +169,7 @@ You can create a json file for each directory of project directory tree to confi
 
 - **ignoredFiles** - A list of ignored files.
 
-   To exclude a file for `cmake` build system:
+   An example of excluding a file from `cmake` build system:
 
    ```json
    {
