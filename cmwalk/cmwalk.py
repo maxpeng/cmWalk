@@ -30,6 +30,7 @@ class CmWalk(object):
     TOP_LEVEL_CMAKELISTS_JINJA2_TEMPLATE = 'TopLevel_CMakeLists.txt.jinja2'
     SUBDIR_CMAKELISTS_JINJA2_TEMPLATE = 'SubDir_CMakeLists.txt.jinja2'
 
+
     def __init__(self):
         self.envJinja = Environment(loader=FileSystemLoader(getPackagePath()), trim_blocks=True, lstrip_blocks=True)
 
@@ -90,7 +91,7 @@ class CmWalk(object):
         return fnameOut
 
 
-def mainFunction():
+def main():
     args = parseArgs()
 
     it = walkdir.filtered_walk(args.input_dir,
@@ -136,4 +137,4 @@ def mainFunction():
 
 
 if __name__ == '__main__':
-    sys.exit(mainFunction())
+    sys.exit(main())

@@ -1,32 +1,33 @@
 from setuptools import setup, find_packages
+import os
+# To use a consistent encoding
+from codecs import open
 from cmwalk import version
 
 
+# Get the long description from the README file
 def readme():
-    with open('README.md') as f:
-        return f.read()
+    here = os.path.abspath(os.path.dirname(__file__))
+    with open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
+        return f.read().replace('\r', '')
 
 
 setup(name='cmwalk',
       version=version.VERSION,
       description='A python script to walk subdirectories of a C/C++ project of embedded system to generate CMakeLists.txt files for building the executable.',
       long_description=readme(),
-      long_description_content_type='text/markdown; charset=UTF-8',
+      long_description_content_type='text/x-rst; charset=UTF-8',
       keywords = ['cmake'],
+      classifiers=[],
       url='https://github.com/maxpeng/cmWalk',
       author='Max Peng',
       author_email='max.peng1768@gmail.com',
       license='MIT',
       packages=find_packages(),
       install_requires=['jinja2', 'walkdir'],
-      include_package_data=True,
-      package_data={
-          # If any package contains *.txt or *.rst files, include them:
-          'cmwalk': ['*.jinja2', '../README.md'],
-      },
       entry_points={
           'console_scripts': [
-              'cmwalk = cmwalk.cmwalk:mainFunction'
+              'cmwalk = cmwalk.cmwalk:main'
           ]
       },
       zip_safe=False)
