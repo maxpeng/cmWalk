@@ -111,8 +111,7 @@ def main():
                 for subdir in subdirs:
                     if subdir in cfg['sourceDirectories']:
                         includedSourceDirs.append(subdir)
-                subdirs.clear()
-                subdirs.extend(includedSourceDirs)
+                subdirs[:] = includedSourceDirs[:]
             elif 'ignoredDirectories' in cfg.keys():
                 for ignoredDir in cfg['ignoredDirectories']:
                     try:
