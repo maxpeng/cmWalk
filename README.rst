@@ -13,7 +13,7 @@ the executable.
 
 usage: cmwalk.py [-h] input_dir
 
-A python script to generate CMakeLists.txt of a C/C++ project - 0.0.1.
+A python script to generate CMakeLists.txt of a C/C++ project - 0.0.7.
 
 positional arguments: input_dir The base directory of C/C++ project.
 
@@ -23,8 +23,11 @@ optional arguments: -h, –help show this help message and exit
 ---------------------
 
 You can create a json file for each directory of project directory tree
-to configure how ``cmwalk`` to generate ‘CMakeLists.txt’. The
+to configure how ``cmwalk`` to generate CMakeLists.txt. The
 configuration filename of ``cmwalk`` is ``cmwalk.json``.
+
+If there is no ``cmwalk.json`` in a directory of project directory tree, then all the files and
+subdirectories of that directory will be parsed for CMakeLists.txt generation.
 
 3.1 Supported properties of ``cmwalk.json``
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,6 +50,15 @@ configuration filename of ``cmwalk`` is ``cmwalk.json``.
         {
             "cmakeToolchainFile": "gcc_arm_none_eabi_toolchain.cmake"
         }
+
+   For above example, ``cmwalk`` will generate following command before ``project`` command to set the used toolchain.
+
+   .. code:: cmake
+
+        # set the toolchain file.
+        # toolchain file should be set before "project" command.
+        # the toolchain file can also be set via "cmake -DCMAKE_TOOLCHAIN_FILE=path/to/file".
+        set(CMAKE_TOOLCHAIN_FILE gcc_arm_none_eabi_toolchain.cmake)
 
    An example of toolchain file:
 
@@ -112,7 +124,7 @@ configuration filename of ``cmwalk`` is ``cmwalk.json``.
 -  **cmakeCompilerOptionsFile**
 
    Specifying a file that contains the additional compiler settings
-   which be inclued in the top-level CMakeLists.txt file.
+   to be included in the top-level CMakeLists.txt file.
 
    Example:
 
@@ -121,6 +133,13 @@ configuration filename of ``cmwalk`` is ``cmwalk.json``.
        {
            "cmakeCompilerOptionsFile": "gcc_arm_none_eabi_opts.cmake"
        }
+
+   For above example, ``cmwalk`` will generate following command after ``project`` command to set the compiler options.
+
+   .. code:: cmake
+
+       # load and run the CMake code from the given file to specify project specific options.
+       include(gcc_arm_none_eabi_opts.cmake)
 
    An example of compiler option files for `GNU Arm Embedded
    Toolchain <https://developer.arm.com/open-source/gnu-toolchain/gnu-rm>`__:
@@ -215,18 +234,20 @@ This is an example of generated top-level ``CMakeLists.txt``:
     include(app/CMakeLists.txt)
     include(libs/CMakeLists.txt)
 
+    # if compiler is GNU gcc/g++, then generate *.bin & *.hex files.
+    if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+        # generate the hex file from the built target.
+        set(HEX_FILE ${PROJECT_NAME}.hex)
+        add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
+            COMMENT "Building ${HEX_FILE}...")
 
-    # generate the hex file from the built target.
-    set(HEX_FILE ${PROJECT_NAME}.hex)
-    add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
-        COMMENT "Building ${HEX_FILE}...")
-
-    # generate the bin file from the built target.
-    set(BIN_FILE ${PROJECT_NAME}.bin)
-    add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-        COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
-        COMMENT "Building ${BIN_FILE}...")
+        # generate the bin file from the built target.
+        set(BIN_FILE ${PROJECT_NAME}.bin)
+        add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+            COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
+            COMMENT "Building ${BIN_FILE}...")
+    endif()
 
 5. References
 -------------

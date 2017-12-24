@@ -35,7 +35,10 @@ optional arguments:
 ## 3. Configuration File
 
 You can create a json file for each directory of project directory tree to configure how `cmwalk` to generate
-'CMakeLists.txt'. The configuration filename of `cmwalk` is `cmwalk.json`. 
+CMakeLists.txt. The configuration filename of `cmwalk` is `cmwalk.json`. 
+
+If there is no ``cmwalk.json`` in a directory of project directory tree, then all the files and
+subdirectories of that directory will be parsed for CMakeLists.txt generation.
 
 ### 3.1 Supported properties of `cmwalk.json`
 
@@ -43,6 +46,8 @@ You can create a json file for each directory of project directory tree to confi
 
   Specifying the toolchain file of the used compiler for current project. You can also set the used toolchain file
   by invoking `cmake` with the command line parameter `-DCMAKE_TOOLCHAIN_FILE=path/to/file`.
+  
+  This property should only be added to top-level directory of the project.
 
   Refer cmake documentation [cmake-toolchains(7)](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html) for the details.
 
@@ -53,7 +58,16 @@ You can create a json file for each directory of project directory tree to confi
       "cmakeToolchainFile": "gcc_arm_none_eabi_toolchain.cmake"
   }
   ```
-
+  
+  For above example, `cmwalk` will generate following command before `project` command to set the used toolchain.
+  
+  ```cmake
+  # set the toolchain file.
+  # toolchain file should be set before "project" command.
+  # the toolchain file can also be set via "cmake -DCMAKE_TOOLCHAIN_FILE=path/to/file".
+  set(CMAKE_TOOLCHAIN_FILE gcc_arm_none_eabi_toolchain.cmake)
+  ```
+  
   An example of toolchain file:
 
   ```cmake
@@ -117,7 +131,7 @@ You can create a json file for each directory of project directory tree to confi
 
 - **cmakeCompilerOptionsFile**
 
-  Specifying a file that contains the additional compiler settings which be inclued in the top-level CMakeLists.txt file.
+  Specifying a file that contains the additional compiler settings to be included in the top-level CMakeLists.txt file.
 
   Example:
 
@@ -125,6 +139,13 @@ You can create a json file for each directory of project directory tree to confi
   {
       "cmakeCompilerOptionsFile": "gcc_arm_none_eabi_opts.cmake"
   }
+  ```
+  
+  For above example, `cmwalk` will generate following command after `project` command to set the compiler options.
+  
+  ```cmake
+  # load and run the CMake code from the given file to specify project specific options.
+  include(gcc_arm_none_eabi_opts.cmake)
   ```
 
   An example of compiler option files for [GNU Arm Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm):
@@ -211,17 +232,20 @@ include(app/CMakeLists.txt)
 include(libs/CMakeLists.txt)
 
 
-# generate the hex file from the built target.
-set(HEX_FILE ${PROJECT_NAME}.hex)
-add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
-    COMMENT "Building ${HEX_FILE}...")
+# if compiler is GNU gcc/g++, then generate *.bin & *.hex files.
+if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
+    # generate the hex file from the built target.
+    set(HEX_FILE ${PROJECT_NAME}.hex)
+    add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -O ihex $<TARGET_FILE:${PROJECT_NAME}.elf> ${HEX_FILE}
+        COMMENT "Building ${HEX_FILE}...")
 
-# generate the bin file from the built target.
-set(BIN_FILE ${PROJECT_NAME}.bin)
-add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
-    COMMENT "Building ${BIN_FILE}...")
+    # generate the bin file from the built target.
+    set(BIN_FILE ${PROJECT_NAME}.bin)
+    add_custom_command(TARGET ${PROJECT_NAME}.elf POST_BUILD
+        COMMAND ${CMAKE_OBJCOPY} -O binary $<TARGET_FILE:${PROJECT_NAME}.elf> ${BIN_FILE}
+        COMMENT "Building ${BIN_FILE}...")
+endif()
 ```
 
 
