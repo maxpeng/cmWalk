@@ -37,7 +37,7 @@ optional arguments:
 You can create a json file for each directory of project directory tree to configure how `cmwalk` to generate
 CMakeLists.txt. The configuration filename of `cmwalk` is `cmwalk.json`. 
 
-If there is no ``cmwalk.json`` in a directory of project directory tree, then all the files and
+If there is no `cmwalk.json` in a directory of project directory tree, then all the files and
 subdirectories of that directory will be parsed for CMakeLists.txt generation.
 
 ### 3.1 Supported properties of `cmwalk.json`
@@ -178,14 +178,14 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
 
 - **ignoredDirectories** - A list of ignored directories.
 
-   `sourceDirs` property has higher priority than `ignoredDirs` property. If both of `sourceDirs`
-   and `ignoredDirs` properties are specified in `cmwalk.json`, `ignoredDirs` property has no effect.
+   `sourceDirectories` property has higher priority than `ignoredDirectories` property. If both of `sourceDirectories`
+   and `ignoredDirectories` properties are specified in `cmwalk.json`, `ignoredDirectories` property has no effect.
 
    An example of excluding subdirectories for searching the source files:
 
    ```json
    {
-       "ignoredDirs": ["docs"]
+       "ignoredDirectories": ["docs"]
    }
    ```
 

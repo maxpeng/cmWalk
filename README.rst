@@ -176,9 +176,9 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
 
 -  **ignoredDirectories** - A list of ignored directories.
 
-   ``sourceDirs`` property has higher priority than ``ignoredDirs``
-   property. If both of ``sourceDirs`` and ``ignoredDirs`` properties
-   are specified in ``cmwalk.json``, ``ignoredDirs`` property has no
+   ``sourceDirectories`` property has higher priority than ``ignoredDirectories``
+   property. If both of ``sourceDirectories`` and ``ignoredDirectories`` properties
+   are specified in ``cmwalk.json``, ``ignoredDirectories`` property has no
    effect.
 
    An example of excluding subdirectories for searching the source
@@ -187,7 +187,7 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
    .. code:: json
 
        {
-            "ignoredDirs": ["docs"]
+            "ignoredDirectories": ["docs"]
        }
 
 -  **ignoredFiles** - A list of ignored files.
