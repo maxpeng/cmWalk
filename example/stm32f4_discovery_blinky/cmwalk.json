@@ -1,0 +1,5 @@
+{
+    "cmakeToolchainFile": "gcc_arm_none_eabi_toolchain.cmake",
+    "cmakeCompilerOptionsFile": "gcc_arm_none_eabi_opts.cmake",
+    "sourceDirectories": ["Drivers", "Inc", "Middlewares", "Src", "startup"]
+}
