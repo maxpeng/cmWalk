@@ -161,6 +161,12 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=${CMAKE_BINARY_DIR}/${PROJECT_NAME}.map -T${LINKER_SCRIPT}")
   ```
 
+- **addToCompilerIncludeDirectories**
+   A flag to control if current directory should be added to the include directories of compiler.
+   
+   The default option is true when `addToCompilerIncludeDirectories` does not exist.
+   
+
 - **sourceDirectories**
 
    A list of source directories.

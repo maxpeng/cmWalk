@@ -73,7 +73,7 @@ class CmWalk(object):
         return fnameOut
 
 
-    def genSubDirCMakeListsFile(self, working_path, subdirs, files):
+    def genSubDirCMakeListsFile(self, working_path, addToCompilerIncludeDirectories, subdirs, files):
         """
         Generate CMakeLists.txt in subdirectories.
 
@@ -85,7 +85,9 @@ class CmWalk(object):
 
         fnameOut = os.path.join(working_path, 'CMakeLists.txt')
         template = self.envJinja.get_template(self.SUBDIR_CMAKELISTS_JINJA2_TEMPLATE)
-        fcontent = template.render({'subdirs': subdirs, 'files': files})
+        fcontent = template.render({'addToCompilerIncludeDirectories':addToCompilerIncludeDirectories,
+                                    'subdirs': subdirs,
+                                    'files': files})
         with open(fnameOut, 'w') as f:
             f.write(fcontent)
         return fnameOut
@@ -105,6 +107,7 @@ def main():
 
         # read configuration data of the working path form the json file, 'cfg' will be None if it does not exist.
         cfg = cmwalk.readCfgJson(working_path)
+        addToCompilerIncludeDirectories = True
         if cfg:
             if 'sourceDirectories' in cfg.keys():
                 includedSourceDirs = []
@@ -125,12 +128,15 @@ def main():
                     except:
                         pass
 
+            if 'addToCompilerIncludeDirectories' in cfg.keys():
+                addToCompilerIncludeDirectories = cfg['addToCompilerIncludeDirectories']
+
         if dir_depth == 0:
             # generate top level CMakeLists.txt.
             cmwalk.genTopLevelDirCMakeListsFile(working_path, subdirs, files, cfg)
         else:
             # generate CMakeLists.txt in subdirectories.
-            cmwalk.genSubDirCMakeListsFile(working_path, subdirs, files)
+            cmwalk.genSubDirCMakeListsFile(working_path, addToCompilerIncludeDirectories, subdirs, files)
         dir_depth += 1
     print("\nFinished the generation of CMakeLists.txt files!")
 
