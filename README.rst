@@ -155,6 +155,20 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
        set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/app/STM32F429ZITx_FLASH.ld)
        set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,-Map=${CMAKE_BINARY_DIR}/${PROJECT_NAME}.map -T${LINKER_SCRIPT}")
 
+-  **addToCompilerIncludeDirectories**
+
+   A flag to control if current directory should be added to the include directories of compiler.
+
+   The default option is true when ``addToCompilerIncludeDirectories`` does not exist.
+
+   An example of not adding current directory to include directories of compiler.
+
+   .. code:: json
+
+       {
+            "addToCompilerIncludeDirectories": false
+       }
+
 -  **sourceDirectories**
 
    A list of source directories.

@@ -31,7 +31,6 @@ positional arguments:
 optional arguments:
   -h, --help  show this help message and exit
 
-
 ## 3. Configuration File
 
 You can create a json file for each directory of project directory tree to configure how `cmwalk` to generate
@@ -46,7 +45,7 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
 
   Specifying the toolchain file of the used compiler for current project. You can also set the used toolchain file
   by invoking `cmake` with the command line parameter `-DCMAKE_TOOLCHAIN_FILE=path/to/file`.
-  
+
   This property should only be added to top-level directory of the project.
 
   Refer cmake documentation [cmake-toolchains(7)](https://cmake.org/cmake/help/latest/manual/cmake-toolchains.7.html) for the details.
@@ -58,9 +57,9 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
       "cmakeToolchainFile": "gcc_arm_none_eabi_toolchain.cmake"
   }
   ```
-  
+
   For above example, `cmwalk` will generate following command before `project` command to set the used toolchain.
-  
+
   ```cmake
   # set the toolchain file.
   # toolchain file should be set before "project" command.
@@ -140,9 +139,9 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
       "cmakeCompilerOptionsFile": "gcc_arm_none_eabi_opts.cmake"
   }
   ```
-  
+
   For above example, `cmwalk` will generate following command after `project` command to set the compiler options.
-  
+
   ```cmake
   # load and run the CMake code from the given file to specify project specific options.
   include(gcc_arm_none_eabi_opts.cmake)
@@ -162,10 +161,18 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
   ```
 
 - **addToCompilerIncludeDirectories**
+
    A flag to control if current directory should be added to the include directories of compiler.
-   
+
    The default option is true when `addToCompilerIncludeDirectories` does not exist.
-   
+
+   An example of not adding current directory to include directories of compiler.
+
+   ```json
+   {
+      "addToCompilerIncludeDirectories": false
+   }
+   ```
 
 - **sourceDirectories**
 
@@ -204,7 +211,6 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
        "ignoredFiles": ["cfg.h.template"]
    }
    ```
-
 
 ## 4. Example of generated CMakeLists.txt
 
@@ -253,7 +259,6 @@ if ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
         COMMENT "Building ${BIN_FILE}...")
 endif()
 ```
-
 
 ## 5. References
 

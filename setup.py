@@ -24,6 +24,7 @@ setup(name='cmwalk',
       author_email='max.peng1768@gmail.com',
       license='MIT',
       packages=find_packages(),
+      include_package_data=True,
       install_requires=['jinja2', 'walkdir'],
       entry_points={
           'console_scripts': [
