@@ -66,7 +66,7 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
   # the toolchain file can also be set via "cmake -DCMAKE_TOOLCHAIN_FILE=path/to/file".
   set(CMAKE_TOOLCHAIN_FILE gcc_arm_none_eabi_toolchain.cmake)
   ```
-  
+
   An example of toolchain file:
 
   ```cmake
@@ -189,7 +189,9 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
    }
    ```
 
-- **ignoredDirectories** - A list of ignored directories.
+- **ignoredDirectories**
+
+   A list of ignored directories.
 
    `sourceDirectories` property has higher priority than `ignoredDirectories` property. If both of `sourceDirectories`
    and `ignoredDirectories` properties are specified in `cmwalk.json`, `ignoredDirectories` property has no effect.
@@ -202,7 +204,9 @@ subdirectories of that directory will be parsed for CMakeLists.txt generation.
    }
    ```
 
-- **ignoredFiles** - A list of ignored files.
+- **ignoredFiles**
+
+   A list of ignored files.
 
    An example of excluding a file from `cmake` build system:
 
@@ -236,6 +240,11 @@ include(gcc_arm_none_eabi_opts.cmake)
 add_executable(nucleo_f429zi_freertos_lwip.elf
     ""
 )
+
+if (${LINK_SCRIPT})
+    set_target_properties(nucleo_f429zi_freertos_lwip.elf PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
+endif()
+
 
 # export the name of executable target via a variable to CMakeLists.txt files in subdirectories.
 set(CURRENT_EXE_NAME ${PROJECT_NAME}.elf)

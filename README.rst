@@ -242,6 +242,11 @@ This is an example of generated top-level ``CMakeLists.txt``:
         ""
     )
 
+    if (${LINK_SCRIPT})
+        set_target_properties(nucleo_f429zi_freertos_lwip.elf PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
+    endif()
+
+
     # export the name of executable target via a variable to CMakeLists.txt files in subdirectories.
     set(CURRENT_EXE_NAME ${PROJECT_NAME}.elf)
     # load and run the CMake code from subdirectories for current target.

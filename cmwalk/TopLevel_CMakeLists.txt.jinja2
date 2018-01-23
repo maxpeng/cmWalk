@@ -28,6 +28,11 @@ add_executable({{ project_name }}.elf
 {% endif %}
 )
 
+if (${LINK_SCRIPT})
+    set_target_properties({{ project_name }}.elf PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
+endif()
+
+
 {% if subdirs|length > 0 %}
 # export the name of executable target via a variable to CMakeLists.txt files in subdirectories.
 set(CURRENT_EXE_NAME ${PROJECT_NAME}.elf)
