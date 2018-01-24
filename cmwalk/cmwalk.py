@@ -121,7 +121,8 @@ def main():
                         subdirs.remove(ignoredDir)
                     except:
                         pass
-            elif 'ignoredFiles' in cfg.keys():
+
+            if 'ignoredFiles' in cfg.keys():
                 for ignoredFile in cfg['ignoredFiles']:
                     try:
                         files.remove(ignoredFile)
