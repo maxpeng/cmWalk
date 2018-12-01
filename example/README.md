@@ -23,8 +23,8 @@ Above example was generate by [STM32CubeMX](http://www.st.com/en/development-too
 ## Building the example
 
 1. Open a DOS command prompt, change the working directory to `example\stm32f4_discovery_blinky`.
-2. Type `cmake .` to generate `CMakeLists.txt` files.
+2. Type `cmwalk .` to generate `CMakeLists.txt` files.
 3. Create a `build` directory under `example\stm32f4_discovery_blinky` directory. 
 4. Type `cmake .. -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - MinGW Makefiles"` to generate the makefiles. 
 5. Type `cmake --build . --target all -- VERBOSE=1` to build the example. If cmake could build the targets sucessfully, you should see `stm32f4_discovery_blinky.elf`, `stm32f4_discovery_blinky.bin`, `stm32f4_discovery_blinky.hex` are generated.
-6. Program the generated executable to STM32F4-Discovery board, you should the red LED blinks every 1 second.
+6. Program the generated executable to STM32F4-Discovery board, you should see the red LED blinks every 1 second.
