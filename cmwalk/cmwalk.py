@@ -64,7 +64,11 @@ class CmWalk(object):
         :return: the full path name of generated CMakeLists.txt.
         """
 
+        projName = os.path.basename(os.path.abspath(working_path))
+
         if cfg:
+            if "projectName" in cfg.keys():
+                projName = cfg['projectName']
             if 'includeLibraries' in cfg.keys():
                 includedLibraries = []
                 for lib in cfg['includeLibraries']:
@@ -72,7 +76,7 @@ class CmWalk(object):
 
         fnameOut = os.path.join(working_path, 'CMakeLists.txt')
         template = self.envJinja.get_template(self.TOP_LEVEL_CMAKELISTS_JINJA2_TEMPLATE)
-        fcontent = template.render({'project_name':os.path.basename(os.path.abspath(working_path)),
+        fcontent = template.render({'project_name':projName,
                                     'subdirs': subdirs,
                                     'files': files,
                                     'cfg': cfg})
