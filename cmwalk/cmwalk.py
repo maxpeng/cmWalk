@@ -13,7 +13,7 @@ from . import version
 def parseArgs():
     description = "A python script to generate CMakeLists.txt of a C/C++ project - v{}.".format(version.VERSION)
     parser = argparse.ArgumentParser(description=description)
-    parser.add_argument('-l', '--library', help='Generate CMakeLists for Library.', action='store_true')
+    parser.add_argument('-l', '--library', help='Generate CMakeLists for both shared and static Library.', action='store_true')
     parser.add_argument('input_dir', help='The base directory of C/C++ project.')
     args = parser.parse_args()
     return args
@@ -113,7 +113,8 @@ def main():
 
     cmwalk = CmWalk()
 
-    if (args.library):
+    if (args.library): 
+        print("Generating CMakeLists.txt for libraries")
         cmwalk.TOP_LEVEL_CMAKELISTS_JINJA2_TEMPLATE = 'TopLevel_CMakeLists_Library.txt.jinja2'
         cmwalk.SUBDIR_CMAKELISTS_JINJA2_TEMPLATE = 'SubDir_CMakeLists_Library.txt.jinja2'
 

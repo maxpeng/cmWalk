@@ -18,7 +18,9 @@ include({{ cfg.cmakeCompilerOptionsFile }})
 
 # export the library target through a variable to CMakeLists.txt files in subdirectories.
 # update the dependent sources.
-add_library(${PROJECT_NAME}
+
+# Configuration for dynamic library
+add_library(${PROJECT_NAME} SHARED
 {%  if files|length > 0 %}
 {% for fname in files %}
     {{ fname }}
@@ -47,6 +49,43 @@ target_link_libraries(${PROJECT_NAME} PRIVATE {{ include }})
 {% if subdirs|length > 0 %}
 # export the name of library target via a variable to CMakeLists.txt files in subdirectories.
 set(CURRENT_LIB_NAME ${PROJECT_NAME})
+# load and run the CMake code from subdirectories for current target.
+{% for subdir in subdirs %}
+include({{ subdir }}/CMakeLists.txt)
+{% endfor %}
+{% endif %}
+
+
+# Configuration for static library
+add_library(${PROJECT_NAME}-static
+{%  if files|length > 0 %}
+{% for fname in files %}
+    {{ fname }}
+{% endfor %}
+{% else %}
+    ""
+{% endif %}
+)
+
+if (LINKER_SCRIPT)
+	# if linker script is defined, make the target to depends on it,
+	# so the target will be rebuilt when linker script was changed.
+    set_target_properties(${PROJECT_NAME}-static PROPERTIES LINK_DEPENDS ${LINKER_SCRIPT})
+endif()
+
+{% if cfg.includeLibraries|length > 0 %}
+{% for include in cfg.includeLibraries %}
+# Add external explicit libraries. Such as 'm' for libm (math.h).
+target_link_libraries(${PROJECT_NAME}-static PRIVATE {{ include }})
+{% endfor %}
+{% else %}
+""
+{% endif %}
+
+
+{% if subdirs|length > 0 %}
+# export the name of library target via a variable to CMakeLists.txt files in subdirectories.
+set(CURRENT_LIB_NAME ${PROJECT_NAME}-static)
 # load and run the CMake code from subdirectories for current target.
 {% for subdir in subdirs %}
 include({{ subdir }}/CMakeLists.txt)
