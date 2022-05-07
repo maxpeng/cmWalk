@@ -3,6 +3,7 @@
 import sys
 import os
 import argparse
+from xml.etree.ElementInclude import include
 from jinja2 import Environment, FileSystemLoader
 import json
 import walkdir # https://walkdir.readthedocs.io/en/stable/#
@@ -12,6 +13,7 @@ from . import version
 def parseArgs():
     description = "A python script to generate CMakeLists.txt of a C/C++ project - v{}.".format(version.VERSION)
     parser = argparse.ArgumentParser(description=description)
+    parser.add_argument('-l', '--library', help='Generate CMakeLists for both shared and static Library.', action='store_true')
     parser.add_argument('input_dir', help='The base directory of C/C++ project.')
     args = parser.parse_args()
     return args
@@ -62,9 +64,19 @@ class CmWalk(object):
         :return: the full path name of generated CMakeLists.txt.
         """
 
+        projName = os.path.basename(os.path.abspath(working_path))
+
+        if cfg:
+            if "projectName" in cfg.keys():
+                projName = cfg['projectName']
+            if 'includeLibraries' in cfg.keys():
+                includedLibraries = []
+                for lib in cfg['includeLibraries']:
+                    includedLibraries.append(lib)
+
         fnameOut = os.path.join(working_path, 'CMakeLists.txt')
         template = self.envJinja.get_template(self.TOP_LEVEL_CMAKELISTS_JINJA2_TEMPLATE)
-        fcontent = template.render({'project_name':os.path.basename(os.path.abspath(working_path)),
+        fcontent = template.render({'project_name':projName,
                                     'subdirs': subdirs,
                                     'files': files,
                                     'cfg': cfg})
@@ -100,6 +112,11 @@ def main():
                               included_files=['*.s', '*.cpp', '*.c', '*.cxx', '*.h', '*.hpp'])
 
     cmwalk = CmWalk()
+
+    if (args.library): 
+        print("Generating CMakeLists.txt for libraries")
+        cmwalk.TOP_LEVEL_CMAKELISTS_JINJA2_TEMPLATE = 'TopLevel_CMakeLists_Library.txt.jinja2'
+        cmwalk.SUBDIR_CMAKELISTS_JINJA2_TEMPLATE = 'SubDir_CMakeLists_Library.txt.jinja2'
 
     dir_depth = 0
     for working_path, subdirs, files in it:
